@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дней до Нового года</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
+
+        input {
+            padding: 10px 14px;
+            font-size: 16px;
+            border-radius: 8px;
+            width: 200px;
+            text-align: center;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .result {
+            min-width: 220px;
+            min-height: 22px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <input type="text" id="dateInput" placeholder="дд.мм.гггг">
+    <button id="calcBtn">Посчитать</button>
+
+    <div class="result" id="daysResult"></div>
+    <div class="result" id="leapResult"></div>
+
+    <script>
+        function daysToNewYear(dateStr) {
+            const [day, month, year] = dateStr.split('.').map(Number);
+            const currentDate = Date.UTC(year, month - 1, day);
+            const newYear = Date.UTC(year, 11, 31);
+            const msInDay = 1000 * 60 * 60 * 24;
+            return Math.round((newYear - currentDate) / msInDay);
+        }
+
+        function isLeapYear(dateStr) {
+            const year = Number(dateStr.split('.')[2]);
+            return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+        }
+
+        const input = document.getElementById('dateInput');
+        const daysResult = document.getElementById('daysResult');
+        const leapResult = document.getElementById('leapResult');
+
+        document.getElementById('calcBtn').addEventListener('click', function() {
+            const value = input.value.trim();
+
+            if (!/^\d{2}\.\d{2}\.\d{4}$/.test(value)) {
+                daysResult.textContent = 'Введите дату в формате дд.мм.гггг';
+                leapResult.textContent = '';
+                return;
+            }
+
+            const days = daysToNewYear(value);
+            const leap = isLeapYear(value);
+
+            daysResult.textContent = 'Дней до Нового года: ' + days;
+            leapResult.textContent = leap ? 'високосный' : 'не високосный';
+        });
+    </script>
+
+</body>
+</html>
